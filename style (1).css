@@ -1,0 +1,75 @@
+body {
+  background-color: #0f0f0f;
+  color: #edf2f4;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  border-bottom: 3px solid #d90429;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  color: #d90429;
+  font-size: 2.5em;
+  margin: 0;
+  letter-spacing: 4px;
+}
+
+.contenedor {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.caja {
+  background-color: #1c1c1c;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  border-left: 5px solid #d90429;
+}
+
+.caja-juego {
+  border-left-color: #ffb703;
+}
+
+.caja-juego h2 {
+  color: #ffb703;
+}
+
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: none;
+  font-size: 1em;
+}
+
+input {
+  background-color: #2b2b2b;
+  color: white;
+}
+
+button {
+  background-color: #d90429;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background-color: #8d0801;
+}
+
+#respuesta-loona {
+  color: #ffb703;
+  font-weight: bold;
+  margin-top: 15px;
+}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>I.M.P. - Sitio Oficial</title>
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: #edf2f4;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 3px solid #d90429;
+      padding-bottom: 15px;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      color: #d90429;
+      font-size: 2.5em;
+      margin: 0;
+      letter-spacing: 4px;
+    }
+
+    .contenedor {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .caja {
+      background-color: #1c1c1c;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      border-left: 5px solid #d90429;
+    }
+
+    .caja-juego {
+      border-left-color: #ffb703;
+    }
+
+    .caja-juego h2 {
+      color: #ffb703;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: none;
+      font-size: 1em;
+    }
+
+    input {
+      background-color: #2b2b2b;
+      color: white;
+    }
+
+    button {
+      background-color: #d90429;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #8d0801;
+    }
+
+    #respuesta-loona {
+      color: #ffb703;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🔥 I.M.P. 🔥</h1>
+    <p>"Immediate Murder Professionals — ¡Cuando quieres a alguien muerto, nosotros lo hacemos rápido!"</p>
+  </header>
+
+  <main class="contenedor">
+    <!-- SECCIÓN DE CONTRATOS -->
+    <section class="caja">
+      <h2>📝 Contrata un Servicio</h2>
+      <input type="text" id="cliente" placeholder="Tu nombre en el Infierno">
+      <input type="text" id="objetivo" placeholder="Nombre del objetivo en la Tierra">
+      <button onclick="contratar()">Enviar a Recepción (Loona)</button>
+      <p id="respuesta-loona"></p>
+    </section>
+
+    <!-- SECCIÓN DEL MINI-JUEGO -->
+    <section class="caja caja-juego">
+      <h2>🌀 Portal al Mundo Humano (Mini-Juego)</h2>
+      <p id="historia">Loona abrió el portal con el Grimorio. ¿Con quién cruzas?</p>
+      <div id="botones-juego">
+        <button onclick="iniciarMision('Blitzo')">Entrar con Blitzo</button>
+        <button onclick="iniciarMision('Moxxie')">Entrar con Moxxie</button>
+        <button onclick="iniciarMision('Millie')">Entrar con Millie</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Lógica del formulario de Loona
+    function contratar() {
+      const cliente = document.getElementById("cliente").value;
+      const objetivo = document.getElementById("objetivo").value;
+      const respuesta = document.getElementById("respuesta-loona");
+
+      if (cliente === "" || objetivo === "") {
+        respuesta.innerText = "🐺 Loona: 'Oye, llena los dos espacios. No soy adivina.'";
+        return;
+      }
+
+      respuesta.innerText = `🐺 Loona: "Ya te anoté, ${cliente}. En cuanto Blitz deje de hacer tonterías iremos por ${objetivo}."`;
+    }
+
+    // Lógica del Mini-Juego
+    let personajeElegido = "";
+
+    function iniciarMision(personaje) {
+      personajeElegido = personaje;
+      const historia = document.getElementById("historia");
+      const botones = document.getElementById("botones-juego");
+
+      historia.innerText = `Cruzaste como ${personajeElegido}. ¡Aparecen agentes de D.H.O.R.K.S. frente a ti! ¿Qué haces?`;
+      botones.innerHTML = `
+        <button onclick="elegirAccion('sigilo')">Esconderse y atacar por sorpresa</button>
+        <button onclick="elegirAccion('caos')">Atacar de frente sin pensar</button>
+      `;
+    }
+
+    function elegirAccion(tipo) {
+      const historia = document.getElementById("historia");
+      const botones = document.getElementById("botones-juego");
+
+      if (tipo === "sigilo" && personajeElegido === "Moxxie") {
+        historia.innerText = "🎯 ¡ÉXITO! Moxxie elimina el objetivo sin hacer ruido y regresan al Infierno con el pago.";
+        botones.innerHTML = `<button onclick="reiniciar()">🔄 Volver a jugar</button>`;
+      } else if (tipo === "caos" && personajeElegido === "Millie") {
+        historia.innerText = "🪓 ¡BRUTAL! Millie derrota a todos los agentes con su hacha y completan el contrato.";
+        botones.innerHTML = `<button onclick="reiniciar()">🔄 Volver a jugar</button>`;
+      } else if (personajeElegido === "Blitzo") {
+        historia.innerText = "🐴 ¡CAOS TOTAL! Blitzo hace un desastre, pero logran saltar por el portal justo a tiempo. Ya en la oficina, Blitzo te mira emocionado y te ofrece un contrato para trabajar en I.M.P. ¿Qué decides?";
+        botones.innerHTML = `
+          <button onclick="decisionBlitzo('aceptar')">✅ Aceptar el contrato</button>
+          <button onclick="decisionBlitzo('rechazar')">❌ Rechazar la oferta</button>
+        `;
+      } else {
+        historia.innerText = "🚨 ¡ATRAPADOS! Ese no era el estilo de " + personajeElegido + ". D.H.O.R.K.S. los capturó.";
+        botones.innerHTML = `<button onclick="reiniciar()">🔄 Volver a jugar</button>`;
+      }
+    }
+
+    function decisionBlitzo(eleccion) {
+      const historia = document.getElementById("historia");
+      const botones = document.getElementById("botones-juego");
+
+      if (eleccion === "aceptar") {
+        historia.innerText = "te convertiste en lo que siempre quisiste";
+      } else {
+        historia.innerText = "talvez en otra ocasion";
+      }
+
+      botones.innerHTML = `<button onclick="reiniciar()">🔄 Volver a jugar</button>`;
+    }
+
+    function reiniciar() {
+      document.getElementById("historia").innerText = "Loona abrió el portal con el Grimorio. ¿Con quién cruzas?";
+      document.getElementById("botones-juego").innerHTML = `
+        <button onclick="iniciarMision('Blitzo')">Entrar con Blitzo</button>
+        <button onclick="iniciarMision('Moxxie')">Entrar con Moxxie</button>
+        <button onclick="iniciarMision('Millie')">Entrar con Millie</button>
+      `;
+    }
+  </script>
+
+</body>
+</html>
