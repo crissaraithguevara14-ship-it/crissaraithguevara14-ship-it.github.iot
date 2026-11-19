@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Akademi High - Base de Datos de Clubes, Estudiantes y Rivales (Info-Chan)</title>
+  <style>
+    :root {
+      --rosa-yandere: #ff2a85;
+      --rosa-oscuro: #b3004b;
+      --morado-rival: #9d4edd;
+      --morado-oscuro: #5a189a;
+      --fondo-oscuro: #120d14;
+      --tarjeta-bg: #1e1622;
+      --tarjeta-estudiante: #261b2c;
+      --texto-claro: #f8f0f5;
+      --borde-neon: #ff66a3;
+      --cian-info: #00e5ff;
+      --dorado-paso: #ffb703;
+    }
+
+    body {
+      background-color: var(--fondo-oscuro);
+      color: var(--texto-claro);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 3px solid var(--rosa-yandere);
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      color: var(--rosa-yandere);
+      margin: 0;
+      font-size: 2.2em;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(255, 42, 133, 0.5);
+    }
+
+    .contenedor {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .btn-principal {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background-color: var(--rosa-yandere);
+      color: white;
+      font-size: 1.15em;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 15px;
+    }
+
+    .btn-principal:hover {
+      background-color: var(--rosa-oscuro);
+    }
+
+    .btn-rivales {
+      background-color: var(--morado-rival);
+    }
+
+    .btn-rivales:hover {
+      background-color: var(--morado-oscuro);
+    }
+
+    /* Cuadrícula de botones */
+    .grid-clubes {
+      display: none;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .btn-club {
+      background-color: var(--tarjeta-bg);
+      color: var(--texto-claro);
+      border: 2px solid var(--rosa-oscuro);
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+    }
+
+    .btn-club:hover, .btn-club.activo {
+      background-color: var(--rosa-yandere);
+      border-color: var(--borde-neon);
+      transform: translateY(-3px);
+    }
+
+    .btn-rival-item {
+      border-color: var(--morado-oscuro);
+    }
+
+    .btn-rival-item:hover, .btn-rival-item.activo {
+      background-color: var(--morado-rival);
+      border-color: #e0aaff;
+    }
+
+    /* Panel de información */
+    .panel-info {
+      display: none;
+      background-color: var(--tarjeta-bg);
+      border: 2px solid var(--rosa-yandere);
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 20px rgba(255, 42, 133, 0.2);
+    }
+
+    .panel-rival {
+      border-color: var(--morado-rival);
+      box-shadow: 0 0 20px rgba(157, 78, 221, 0.25);
+    }
+
+    .panel-info h2 {
+      color: var(--rosa-yandere);
+      margin-top: 0;
+      border-bottom: 1px solid #3a2a42;
+      padding-bottom: 10px;
+    }
+
+    .panel-rival h2 {
+      color: #e0aaff;
+    }
+
+    .dato {
+      margin: 12px 0;
+      line-height: 1.5;
+    }
+
+    .dato strong {
+      color: #ff85b8;
+    }
+
+    .lista-miembros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .badge-miembro {
+      background-color: #2d2033;
+      color: var(--texto-claro);
+      border: 1px solid var(--rosa-oscuro);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.95em;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .badge-miembro:hover, .badge-miembro.seleccionado {
+      background-color: var(--rosa-yandere);
+      border-color: white;
+      transform: scale(1.05);
+    }
+
+    .badge-lider {
+      background-color: var(--rosa-oscuro);
+      border-color: #ff85b8;
+      font-weight: bold;
+    }
+
+    .badge-metodo {
+      background-color: #2c1642;
+      border: 1px solid var(--morado-rival);
+      color: #f3d5ff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.95em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .badge-metodo:hover, .badge-metodo.seleccionado {
+      background-color: var(--morado-rival);
+      color: white;
+      border-color: white;
+    }
+
+    /* Ficha individual del estudiante y guía paso a paso */
+    .ficha-estudiante {
+      display: none;
+      margin-top: 25px;
+      background-color: var(--tarjeta-estudiante);
+      border-left: 5px solid var(--cian-info);
+      border-radius: 8px;
+      padding: 20px;
+      animation: aparecer 0.25s ease;
+    }
+
+    .ficha-pasos {
+      border-left-color: var(--dorado-paso);
+    }
+
+    .ficha-estudiante h3 {
+      color: var(--cian-info);
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.3em;
+    }
+
+    .ficha-pasos h3 {
+      color: var(--dorado-paso);
+    }
+
+    .grid-datos-alumno {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .item-alumno {
+      background-color: #1a121e;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #3b2846;
+    }
+
+    .item-alumno span {
+      color: #80f2ff;
+      font-weight: bold;
+    }
+
+    .lista-pasos {
+      margin: 10px 0 0 0;
+      padding-left: 20px;
+    }
+
+    .lista-pasos li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🌸 INFO-CHAN: ARCHIVOS DE AKADEMI HIGH 🌸</h1>
+    <p>Base de datos oficial de Clubes, Estudiantes y Rivales (Modo 202X)</p>
+  </header>
+
+  <main class="contenedor">
+    <!-- BOTÓN 1: CLUBES Y ESTUDIANTES -->
+    <button class="btn-principal" onclick="mostrarClubes()">📂 Ver Todos los Clubes y Estudiantes de Akademi</button>
+
+    <!-- BOTÓN 2: RIVALES Y MÉTODOS DE ELIMINACIÓN -->
+    <button class="btn-principal btn-rivales" onclick="mostrarRivales()">💔 Ver Todas las Rivales y Métodos de Eliminación</button>
+
+    <!-- LISTA DE BOTONES DE TODOS LOS CLUBES -->
+    <div id="lista-clubes" class="grid-clubes"></div>
+
+    <!-- TARJETA DE DETALLES DEL CLUB SELECCIONADO -->
+    <div id="detalle-club" class="panel-info">
+      <h2 id="club-nombre"></h2>
+      <div class="dato"><strong>📍 Ubicación:</strong> <span id="club-ubicacion"></span></div>
+      <div class="dato"><strong>👑 Líder del Club:</strong> <span id="club-lider"></span></div>
+      <div class="dato"><strong>📖 Información y Actividad:</strong> <span id="club-descripcion"></span></div>
+      <div class="dato"><strong>✨ Beneficio al unirse:</strong> <span id="club-beneficio"></span></div>
+      
+      <div class="dato">
+        <strong>👥 Integrantes del Club (Haz clic en un nombre para ver su expediente):</strong>
+        <div id="club-miembros" class="lista-miembros"></div>
+      </div>
+
+      <!-- EXPEDIENTE INDIVIDUAL DEL ESTUDIANTE SELECCIONADO -->
+      <div id="ficha-alumno" class="ficha-estudiante">
+        <h3 id="alumno-nombre"></h3>
+        <div class="grid-datos-alumno">
+          <div class="item-alumno"><span>Clase:</span> <b id="alumno-clase"></b></div>
+          <div class="item-alumno"><span>Personalidad:</span> <b id="alumno-personalidad"></b></div>
+          <div class="item-alumno"><span>Crush (Enamorado/a):</span> <b id="alumno-crush"></b></div>
+          <div class="item-alumno"><span>Fuerza:</span> <b id="alumno-fuerza"></b></div>
+        </div>
+        <div class="dato"><strong>📋 Información adicional:</strong> <span id="alumno-info"></span></div>
+      </div>
+    </div>
+
+    <!-- LISTA DE BOTONES DE LAS 10 RIVALES -->
+    <div id="lista-rivales" class="grid-clubes"></div>
+
+    <!-- TARJETA DE DETALLES DE LA RIVAL SELECCIONADA -->
+    <div id="detalle-rival" class="panel-info panel-rival">
+      <h2 id="rival-nombre"></h2>
+      <div class="dato"><strong>📅 Semana de aparición:</strong> <span id="rival-semana"></span></div>
+      <div class="dato"><strong>🏫 Rol / Club:</strong> <span id="rival-rol"></span></div>
+      <div class="dato"><strong>📖 Descripción:</strong> <span id="rival-desc"></span></div>
+
+      <div class="dato">
+        <strong>🗡️ Métodos de Eliminación (Haz clic en un método para ver el paso a paso):</strong>
+        <div id="rival-metodos" class="lista-miembros"></div>
+      </div>
+
+      <!-- GUÍA PASO A PASO DEL MÉTODO SELECCIONADO -->
+      <div id="ficha-metodo" class="ficha-estudiante ficha-pasos">
+        <h3 id="metodo-titulo"></h3>
+        <ol id="metodo-pasos" class="lista-pasos"></ol>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Base de datos real de estudiantes (Modo 202X)
+    const datosEstudiantes = {
+      "Amai Odayaka": { clase: "2-2", personalidad: "Amable (Rival #2)", crush: "Senpai (Taro Yamada)", fuerza: "Incapaz de defenderse", info: "Presidenta del Club de Cocina. Es dulce, gentil y sus habilidades culinarias superan su edad. Se ausenta la primera semana por enfermedad." },
+      "Shoku Tsuburaya": { clase: "3-2", personalidad: "Amigable", crush: "Amai Odayaka", fuerza: "Incapaz de defenderse", info: "Líder sustituto del club cuando Amai no está. Admira profundamente la cocina y amabilidad de Amai." },
+      "Ajia Ashitomi": { clase: "2-1", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Muy orgullosa de la cultura y gastronomía tradicional japonesa; le desagrada la comida occidental." },
+      "Kenko Sukoyaka": { clase: "2-2", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Apasionado por la nutrición y la comida saludable; siempre busca que sus compañeros coman bien." },
+      "Saki Miyu": { clase: "2-1", personalidad: "Mariposa Social", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "La mejor amiga de Kokona Haruka. Siempre está dispuesta a escuchar y apoyar a sus amigos." },
+      "Seiyo Akanishi": { clase: "2-1", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Obsesionado con la cultura occidental y estadounidense, a pesar de tener una idea exagerada de ella." },
+      "Kizana Sunobu": { clase: "2-2", personalidad: "Presumida (Rival #3)", crush: "Senpai (Taro Yamada)", fuerza: "Incapaz de defenderse", info: "Presidenta del Club de Drama. Arrogante, vanidosa y busca ser la actriz más famosa del mundo." },
+      "Tsuruzo Yamazaki": { clase: "3-1", personalidad: "Amigable", crush: "Kizana Sunobu", fuerza: "Incapaz de defenderse", info: "Líder sustituto del Club de Drama. Habla de forma muy teatral y dramática en todo momento." },
+      "Kokona Haruka": { clase: "2-1", personalidad: "Mariposa Social", crush: "Riku Soma", fuerza: "Incapaz de defenderse", info: "Mejor amiga de Saki Miyu. Es una chica dulce que atraviesa problemas económicos familiares." },
+      "Riku Soma": { clase: "2-1", personalidad: "Amigable", crush: "Kokona Haruka", fuerza: "Incapaz de defenderse", info: "Proviene de una familia adinerada y está profundamente enamorado de Kokona Haruka." },
+      "Shozo Kurosawa": { clase: "2-2", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Aspira a convertirse en un gran director de cine en el futuro." },
+      "Tokuko Kitagawa": { clase: "3-1", personalidad: "Presumida", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Rivaliza en secreto con Kizana Sunobu porque cree que ella debería ser la verdadera estrella del club." },
+      "Oka Ruto": { clase: "3-2", personalidad: "Cobarde (Rival #4)", crush: "Senpai (Taro Yamada)", fuerza: "Incapaz de defenderse", info: "Presidenta del Club de Ocultismo. Tímida, sombría y convencida de que existen fantasmas y demonios." },
+      "Shin Higaku": { clase: "3-2", personalidad: "Cobarde", crush: "Oka Ruto", fuerza: "Incapaz de defenderse", info: "Líder sustituto del club. Es la mano derecha de Oka y trata de mantener el orden entre los miembros." },
+      "Chojo Tekina": { clase: "3-1", personalidad: "Cobarde", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Oculta su ojo derecho con su cabello y se interesa por las maldiciones y lo paranormal." },
+      "Daku Atsu": { clase: "2-2", personalidad: "Cobarde", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Siempre lleva lentes opacos y estudia libros antiguos sobre demonología." },
+      "Supana Churu": { clase: "2-2", personalidad: "Cobarde", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Usa un parche con una calavera aunque no tiene ninguna herida real en el ojo; solo lo usa por estética." },
+      "Kokuma Jutsu": { clase: "1-2", personalidad: "Cobarde", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Tiene vendas en el rostro que asegura son por accidentes domésticos, aunque todos sospechan de rituales." },
+      "Geiju Tsuka": { clase: "3-2", personalidad: "Solitario", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Presidente del Club de Arte. Casi nunca habla; se comunica usando únicamente una o dos palabras." },
+      "Borupen Saishiki": { clase: "2-2", personalidad: "Rencoroso", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Dibuja ilustraciones oscuras y macabras; tiene una personalidad fría y distante." },
+      "Enpitsu Byoga": { clase: "2-1", personalidad: "Presumido", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Narcisista que suele pintar autorretratos de sí mismo constantemente." },
+      "Maka Tansei": { clase: "2-1", personalidad: "Solitaria", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Muy distraída y excéntrica; suele mirar al techo buscando inspiración artística." },
+      "Efude Nurimono": { clase: "1-2", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Apasionada por el anime y el manga; sueña con convertirse en mangaka profesional." },
+      "Miyuji Shan": { clase: "3-1", personalidad: "Mariposa Social", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Líder del club y vocalista de la banda 'Strawberry Thieves'. Antes era muy tímida hasta que descubrió el rock." },
+      "Gita Yamahato": { clase: "2-2", personalidad: "Mariposa Social", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Guitarrista principal de la banda; trata a su guitarra como si fuera su mejor amiga." },
+      "Beshi Takamine": { clase: "1-2", personalidad: "Mariposa Social", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Bajista de la banda, muy enérgica y siempre entusiasmada por tocar en vivo." },
+      "Dora Tamamoto": { clase: "2-1", personalidad: "Mariposa Social", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Baterista del grupo; aunque parece tranquila, toca con muchísima fuerza." },
+      "Kiba Kawaito": { clase: "1-1", personalidad: "Mariposa Social", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Tecladista de la banda, conocida por su estilo alegre y colorido." },
+      "Budo Masuta": { clase: "3-2", personalidad: "Heroico", crush: "Raibaru Fumetsu (en el pasado)", fuerza: "Maestro de Artes Marciales", info: "Presidente del Club de Artes Marciales. Muy entusiasta, justo y jamás dudará en detener a un atacante." },
+      "Juku Ren": { clase: "1-2", personalidad: "Heroico", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "El miembro más joven y novato del club, pero entrena duro todos los días para mejorar." },
+      "Shima Shiya": { clase: "2-1", personalidad: "Heroica", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "Muy disciplinada y respetuosa; admira las enseñanzas de Budo." },
+      "Sho Kunin": { clase: "2-2", personalidad: "Heroico", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "Segundo al mando informal del club; serio y dedicado al entrenamiento." },
+      "Mina Rai": { clase: "3-1", personalidad: "Heroica", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "La integrante femenina más fuerte del club; protege a los estudiantes más débiles." },
+      "Fureddo Jonzu": { clase: "3-2", personalidad: "Detective / Relajado", crush: "Dafuni Bureiku", fuerza: "Lucha si hay peligro", info: "Presidente del Club de Fotografía. Inspirado en Fred de Scooby-Doo; toma el liderazgo si ocurren crímenes." },
+      "Rojasu Norubiru": { clase: "3-1", personalidad: "Detective / Relajado", crush: "Ninguno", fuerza: "Lucha si hay peligro", info: "Le encanta comer bocadillos y pasar el rato en el club, pero ayuda a investigar si baja la atmósfera." },
+      "Sukubi Dubidu": { clase: "3-1", personalidad: "Detective / Relajado", crush: "Ninguno", fuerza: "Lucha si hay peligro", info: "Muy leal a sus amigos del club, especialmente a Rojasu." },
+      "Dafuni Bureiku": { clase: "3-2", personalidad: "Detective / Relajado", crush: "Fureddo Jonzu", fuerza: "Lucha si hay peligro", info: "Se preocupa mucho por su apariencia y suele acompañar a Fureddo a todas partes." },
+      "Beruma Dinkuri": { clase: "2-2", personalidad: "Detective / Relajado", crush: "Ninguno", fuerza: "Lucha si hay peligro", info: "La mente más analítica del grupo; es la primera en sospechar cuando algo raro pasa en Akademi." },
+      "Kaga Kusha": { clase: "3-2", personalidad: "Excéntrico", crush: "Megami Saikou", fuerza: "Incapaz de defenderse", info: "Presidente del Club de Ciencias. Un genio excéntrico que sueña con dirigir Saikou Corp algún día." },
+      "Horo Guramu": { clase: "3-1", personalidad: "Adicto al teléfono", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Especialista en hologramas y tecnología proyectada." },
+      "Yaku Zaishi": { clase: "2-2", personalidad: "Solitario", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Experto en química y sustancias; siempre lleva gafas protectoras." },
+      "Meka Nikaru": { clase: "2-1", personalidad: "Solitaria", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Ingeniera mecánica que construye trajes robóticos y maquinaria." },
+      "Homu Kurusu": { clase: "1-2", personalidad: "Solitaria", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Especialista en robótica que pasa todo el tiempo trabajando en un androide misterioso." },
+      "Asu Rito": { clase: "3-1", personalidad: "Heroica (Rival #5)", crush: "Senpai (Taro Yamada)", fuerza: "Muy fuerte", info: "Presidenta del Club de Deportes. Alegre, competitiva y la mejor atleta de toda la escuela." },
+      "Itachi Zametora": { clase: "3-2", personalidad: "Heroico", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "Líder sustituto del club. Gruñón, estricto y muy exigente con el rendimiento físico." },
+      "Hojiro Zameshiro": { clase: "2-2", personalidad: "Heroico", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "Nadador competitivo que busca superar siempre a Itachi." },
+      "Unagi Denkashiza": { clase: "2-1", personalidad: "Heroico", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "Apasionado por la natación y el atletismo; tiene un pasado rebelde que dejó atrás gracias al deporte." },
+      "Iruka Dorufino": { clase: "1-2", personalidad: "Heroico", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "Nadador veloz y amigable que entrena todos los días en la piscina." },
+      "Mantaro Sashimasu": { clase: "1-1", personalidad: "Heroico", crush: "Ninguno", fuerza: "Lucha contra asesinos", info: "Admira profundamente a Budo Masuta y busca volverse más fuerte mediante el deporte." },
+      "Uekiya Engeika": { clase: "3-1", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Presidenta del Club de Jardinería. Es como una hermana mayor para todos, cariñosa y amante de las flores." },
+      "Himari Fujita": { clase: "2-2", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Disfruta plantar flores alrededor de toda la academia para embellecerla." },
+      "Sakura Hagiwara": { clase: "2-1", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Tiene una enfermedad cardíaca incurable; aprovecha cada día cuidando las flores con paz." },
+      "Sumire Suzuki": { clase: "1-2", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Le encanta regar las plantas y aprender sobre botánica." },
+      "Tsubaki Uesugi": { clase: "1-1", personalidad: "Amigable", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Muy tranquila y educada; encuentra paz trabajando en el invernadero." },
+      "Gema Taku": { clase: "3-2", personalidad: "Solitario", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Líder del Club de Videojuegos. Un gamer competitivo que al principio descuida su apariencia." },
+      "Ryuto Ippongo": { clase: "2-2", personalidad: "Adicto al teléfono", crush: "Pippi Osu", fuerza: "Incapaz de defenderse", info: "Lleva una bandana roja y está enamorado de Pippi Osu, aunque le da pena confesarlo." },
+      "Pippi Osu": { clase: "2-1", personalidad: "Adicta al teléfono", crush: "Ryuto Ippongo", fuerza: "Incapaz de defenderse", info: "Experta en juegos de ritmo y enamorada en secreto de Ryuto." },
+      "Midori Gurin": { clase: "1-2", personalidad: "Adicta al teléfono", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Conocida por enviar correos y preguntas interminables todo el día desde su teléfono." },
+      "Mai Waifu": { clase: "3-1", personalidad: "Solitaria", crush: "Ninguno", fuerza: "Incapaz de defenderse", info: "Una chica soñadora que suele mirar por la ventana pensando en romances de videojuegos." },
+      "Info-chan": { clase: "Desconocida", personalidad: "Maligna / Manipuladora", crush: "Ninguno", fuerza: "Desconocida", info: "La misteriosa informante de Akademi High. Vende secretos, objetos y favores a cambio de fotografías comprometedoras." }
+    };
+
+    // Base de datos real de los clubes de Yandere Simulator (Modo 202X)
+    const clubesYandere = [
+      {
+        nombre: "Club de Cocina (Cooking Club)",
+        ubicacion: "Primer piso, ala oeste",
+        lider: "Amai Odayaka (Líder sustituto: Shoku Tsuburaya)",
+        descripcion: "Se dedican a preparar bocadillos y repartirlos entre los estudiantes de la academia para alegrarles el día.",
+        beneficio: "Permite cocinar comida y repartirla entre los estudiantes para subir tu reputación rápidamente.",
+        miembros: ["Amai Odayaka", "Shoku Tsuburaya", "Ajia Ashitomi", "Kenko Sukoyaka", "Saki Miyu", "Seiyo Akanishi"]
+      },
+      {
+        nombre: "Club de Drama (Drama Club)",
+        ubicacion: "Primer piso, ala este",
+        lider: "Kizana Sunobu (Líder sustituto: Tsuruzo Yamazaki)",
+        descripcion: "Ensayan obras de teatro y practican actuación en el gimnasio y en su salón lleno de vestuarios y utilería.",
+        beneficio: "Acceso a guantes (evitan dejar huellas dactilares en armas) y máscaras para ocultar tu identidad.",
+        miembros: ["Kizana Sunobu", "Tsuruzo Yamazaki", "Kokona Haruka", "Riku Soma", "Shozo Kurosawa", "Tokuko Kitagawa"]
+      },
+      {
+        nombre: "Club de Ocultismo (Occult Club)",
+        ubicacion: "Primer piso, ala norte",
+        lider: "Oka Ruto (Líder sustituto: Shin Higaku)",
+        descripcion: "Investigan los siete misterios de Akademi High e intentan invocar demonios mediante rituales.",
+        beneficio: "Reduce en un 50% la pérdida de cordura al eliminar rivales y retrasa el tiempo en que los alumnos sospechan de ti.",
+        miembros: ["Oka Ruto", "Shin Higaku", "Chojo Tekina", "Daku Atsu", "Supana Churu", "Kokuma Jutsu"]
+      },
+      {
+        nombre: "Club de Arte (Art Club)",
+        ubicacion: "Segundo piso, ala norte",
+        lider: "Geiju Tsuka",
+        descripcion: "Un grupo tranquilo dedicado a la pintura y la escultura dirigido por un artista de muy pocas palabras.",
+        beneficio: "Permite usar una bata de pintor que oculta manchas de sangre haciéndolas pasar por pintura roja.",
+        miembros: ["Geiju Tsuka", "Borupen Saishiki", "Enpitsu Byoga", "Maka Tansei", "Efude Nurimono"]
+      },
+      {
+        nombre: "Club de Música Ligera (Light Music Club)",
+        ubicacion: "Segundo piso, ala norte",
+        lider: "Miyuji Shan",
+        descripcion: "Forman una banda de rock llamada 'Strawberry Thieves' y practican instrumentos juntos.",
+        beneficio: "Acceso a un estuche de violonchelo para transportar armas grandes o cuerpos sin levantar sospechas, además de minijuegos de ritmo.",
+        miembros: ["Miyuji Shan", "Gita Yamahato", "Beshi Takamine", "Dora Tamamoto", "Kiba Kawaito"]
+      },
+      {
+        nombre: "Club de Artes Marciales (Martial Arts Club)",
+        ubicacion: "Segundo piso, ala oeste",
+        lider: "Budo Masuta",
+        descripcion: "Entrenan combate cuerpo a cuerpo y defensa personal. Todos sus miembros tienen personalidad Heroica.",
+        beneficio: "Ganas automáticamente cualquier forcejeo físico contra estudiantes o profesores.",
+        miembros: ["Budo Masuta", "Juku Ren", "Shima Shiya", "Sho Kunin", "Mina Rai"]
+      },
+      {
+        nombre: "Club de Fotografía (Photography Club)",
+        ubicacion: "Tercer piso, ala oeste",
+        lider: "Fureddo Jonzu",
+        descripcion: "Aunque dicen tomar fotos, lo usan principalmente para pasar el rato, aunque se vuelven detectives si baja la atmósfera escolar.",
+        beneficio: "Permite hacer zoom con la cámara del teléfono y tomar fotos a los rostros de los alumnos sin que lo vean sospechoso.",
+        miembros: ["Fureddo Jonzu", "Rojasu Norubiru", "Sukubi Dubidu", "Dafuni Bureiku", "Beruma Dinkuri"]
+      },
+      {
+        nombre: "Club de Ciencias (Science Club)",
+        ubicacion: "Tercer piso, ala norte",
+        lider: "Kaga Kusha",
+        descripcion: "Realizan experimentos avanzados y construyen inventos futuristas liderados por un genio excéntrico.",
+        beneficio: "Acceso a un robot aspiradora que limpia sangre automáticamente y a una tina de ácido para deshacerse de pruebas.",
+        miembros: ["Kaga Kusha", "Horo Guramu", "Yaku Zaishi", "Meka Nikaru", "Homu Kurusu"]
+      },
+      {
+        nombre: "Club de Deportes (Sports Club)",
+        ubicacion: "Gimnasio / Piscina exterior",
+        lider: "Asu Rito (Líder sustituto: Itachi Zametora)",
+        descripcion: "Entrenan atletismo y natación intensivamente para competencias escolares y olímpicas.",
+        beneficio: "Aumenta tu velocidad al correr y te permite cargar equipamiento deportivo (como bates o pesas) sin levantar sospechas.",
+        miembros: ["Asu Rito", "Itachi Zametora", "Hojiro Zameshiro", "Unagi Denkashiza", "Iruka Dorufino", "Mantaro Sashimasu"]
+      },
+      {
+        nombre: "Club de Jardinería (Gardening Club)",
+        ubicacion: "Patio exterior oeste (Invernadero)",
+        lider: "Uekiya Engeika",
+        descripcion: "Cuidan las flores y plantas de toda la escuela con mucha dedicación y amabilidad.",
+        beneficio: "Acceso al cobertizo con herramientas de jardinería (pala, hacha, trituradora) y semillas para fabricar venenos.",
+        miembros: ["Uekiya Engeika", "Himari Fujita", "Sakura Hagiwara", "Sumire Suzuki", "Tsubaki Uesugi"]
+      },
+      {
+        nombre: "Club de Videojuegos (Gaming Club)",
+        ubicacion: "Tercer piso, ala este (Salón de cómputo)",
+        lider: "Gema Taku",
+        descripcion: "Un club no oficial donde se reúnen a jugar videojuegos en computadora y consolas portátiles.",
+        beneficio: "Permite jugar videojuegos para subir temporalmente una estadística (fuerza, biología, seducción, etc.) durante el día.",
+        miembros: ["Gema Taku", "Ryuto Ippongo", "Pippi Osu", "Midori Gurin", "Mai Waifu"]
+      },
+      {
+        nombre: "Info Club",
+        ubicacion: "Tercer piso, ala norte (Salón cerrado)",
+        lider: "Info-chan",
+        descripcion: "No es un club real, sino el centro de operaciones secreto de Info-chan lleno de monitores de vigilancia.",
+        beneficio: "No te puedes unir, pero puedes intercambiar fotos y favores por información, objetos o servicios.",
+        miembros: ["Info-chan"]
+      }
+    ];
+
+    // Base de datos de las 10 Rivales de Yandere Simulator (Modo 202X)
+    const rivalesYandere = [
+      {
+        nombre: "1. Osana Najimi",
+        semana: "Semana 1",
+        rol: "Amiga de la infancia de Senpai (Sin club)",
+        desc: "Una chica tsundere que conoce a Taro desde niños. Siempre está acompañada por su inseparable mejor amiga Raibaru Fumetsu.",
+        metodos: {
+          "Ahogamiento en la piscina (Específico)": [
+            "Paso 1: Espera a que Osana tome el sol junto a la piscina durante el horario de almuerzo o descanso.",
+            "Paso 2: Consigue un objeto pesado (como una pesa del gimnasio o un bote lleno) y llévalo con sigilo detrás de su silla reclinable.",
+            "Paso 3: Ata su cabello largo a la pesa para arrastrarla al fondo de la piscina sin que nadie te vea."
+          ],
+          "Decapitación con ventilador (Específico)": [
+            "Paso 1: Habla con Osana sobre su acosador para desbloquear la conversación en la azotea.",
+            "Paso 2: Consigue un destornillador en el taller o salón de ciencias.",
+            "Paso 3: Cuando Osana se incline junto al ventilador industrial de la azotea, usa el destornillador para quitar la rejilla y empújala."
+          ],
+          "Rechazo (Pacífico)": [
+            "Paso 1: Sabotea los 5 eventos diarios de Osana con Senpai (por ejemplo, poniendo sal en su bento el lunes o dañando su libro el martes).",
+            "Paso 2: Asegúrate de que no te descubra saboteando sus cosas.",
+            "Paso 3: El viernes por la tarde bajo el árbol de cerezo, Senpai la rechazará por sus malas actitudes."
+          ],
+          "Emparejamiento / Matchmaking (Pacífico)": [
+            "Paso 1: Identifica a su pretendiente secreto (Kyuji Konagawa).",
+            "Paso 2: Ayuda a Kyuji a cambiar su apariencia según los gustos de Osana y compra el audífono en Info-chan.",
+            "Paso 3: Guía a Kyuji durante sus charlas con Osana para subir su afecto al 100% antes del viernes."
+          ],
+          "Amistad / Traición (Pacífico / Letal)": [
+            "Paso 1: Habla con Osana el lunes por la mañana sobre el problema que tiene con un acosador.",
+            "Paso 2: Visita la casa del acosador por la noche desde tu habitación y rescata al gato de Osana.",
+            "Paso 3: Invita a Osana a tu casa: puedes pedirle que se aleje de Senpai (Amistad) o darle té con sedante para secuestrarla (Traición)."
+          ]
+        }
+      },
+      {
+        nombre: "2. Amai Odayaka",
+        semana: "Semana 2",
+        rol: "Presidenta del Club de Cocina",
+        desc: "Una chica dulce y amable que regresa a la escuela tras recuperarse de una enfermedad. Conquista a Senpai mediante la comida.",
+        metodos: {
+          "Explosión de estufa (Específico)": [
+            "Paso 1: Consigue una llave inglesa en el taller o cuarto de conserje.",
+            "Paso 2: Cuando Amai esté preparando un evento de cocina o pastelillos, sabotea la válvula de gas de la estufa.",
+            "Paso 3: Al encender la estufa para hornear, ocurrirá una explosión fatal que parecerá un accidente."
+          ],
+          "Envenenamiento (Letal)": [
+            "Paso 1: Consigue veneno letal en el gabinete de la enfermería (robando las llaves o con nivel de biología) o mediante Info-chan.",
+            "Paso 2: Espera a que Amai deje su almuerzo o bebida sin vigilancia mientras reparte bocadillos.",
+            "Paso 3: Coloca el veneno en su comida para eliminarla frente a testigos sin levantar sospechas directas."
+          ],
+          "Rechazo (Pacífico)": [
+            "Paso 1: Arruina los platillos y regalos culinarios que Amai prepara para Senpai durante toda la semana.",
+            "Paso 2: Puedes poner veneno emético para que Senpai se enferme o estropear los ingredientes en la cocina.",
+            "Paso 3: El viernes Senpai rechazará su confesión al creer que sus regalos fueron descuidados."
+          ],
+          "Emparejamiento / Matchmaking (Pacífico)": [
+            "Paso 1: Identifica a su pretendiente (Shoku Tsuburaya, el líder sustituto del Club de Cocina).",
+            "Paso 2: Mejora el aspecto de Shoku y dale consejos sobre los temas de conversación favoritos de Amai.",
+            "Paso 3: Completa las sesiones de citas en la fuente hasta que acepte salir con él."
+          ]
+        }
+      },
+      {
+        nombre: "3. Kizana Sunobu",
+        semana: "Semana 3",
+        rol: "Presidenta del Club de Drama",
+        desc: "Arrogante y dramática, busca convertir a Senpai en el coprotagonista de su obra de teatro escolar.",
+        metodos: {
+          "Accidente con saco de arena en el escenario (Específico)": [
+            "Paso 1: Sube a las pasarelas superiores del gimnasio durante el ensayo de la obra de Kizana.",
+            "Paso 2: Lleva un cuchillo o tijeras para cortar la cuerda que sostiene el saco de arena pesado sobre el escenario.",
+            "Paso 3: Suéltalo justo cuando Kizana esté parada en el centro ensayando su monólogo."
+          ],
+          "Electrocución en el escenario (Específico)": [
+            "Paso 1: Consigue un destornillador y una botella de agua o cubeta.",
+            "Paso 2: Sabotea el cableado del micrófono o reflector en el escenario del gimnasio y derrama agua en el piso.",
+            "Paso 3: Cuando Kizana tome el micrófono encendido, sufrirá una descarga fatal."
+          ],
+          "Expulsión (Pacífico)": [
+            "Paso 1: Roba el anillo o pertenencia valiosa de otro estudiante y escóndelo en el casillero o bolso de Kizana.",
+            "Paso 2: Repite sabotajes académicos (respuestas falsas en exámenes, contrabando) y repórtala cada día con la consejera Genka Kunahito.",
+            "Paso 3: Al acumular 5 reportes graves, será expulsada de Akademi High."
+          ]
+        }
+      },
+      {
+        nombre: "4. Oka Ruto",
+        semana: "Semana 4",
+        rol: "Presidenta del Club de Ocultismo",
+        desc: "Tímida y obsesionada con lo paranormal. Cree que Senpai tiene algo sobrenatural que la atrae.",
+        metodos: {
+          "Sabotaje de ritual / Incendio (Específico)": [
+            "Paso 1: Aprovecha las velas encendidas en el salón del Club de Ocultismo.",
+            "Paso 2: Consigue un bidón de gasolina en el cobertizo de jardinería y rocía el área donde Oka realiza su ritual.",
+            "Paso 3: Al encender las velas o lanzar un cerillo, quedará atrapada en el fuego."
+          ],
+          "Destrucción de reputación / Bullying (Pacífico)": [
+            "Paso 1: Investiga los secretos oscuros de Oka (como su obsesión con demonios o su historial en redes).",
+            "Paso 2: Chismea con las Bullies y otros alumnos usando sus gustos opuestos para bajar su reputación por debajo de -100.",
+            "Paso 3: Si su reputación llega a -150, dejará de asistir a la escuela permanentemente."
+          ]
+        }
+      },
+      {
+        nombre: "5. Asu Rito",
+        semana: "Semana 5",
+        rol: "Presidenta del Club de Deportes",
+        desc: "Una atleta llena de energía que intenta motivar a Senpai mediante el ejercicio físico.",
+        metodos: {
+          "Ahogamiento / Sabotaje en la piscina (Específico)": [
+            "Paso 1: Espera a que Asu realice sus entrenamientos de resistencia en la piscina escolar.",
+            "Paso 2: Sabotea el equipo de entrenamiento o utiliza sedantes en su botella de agua deportiva.",
+            "Paso 3: Al perder fuerzas en el agua sin salvavidas cerca, no podrá salir a la superficie."
+          ],
+          "Emparejamiento / Matchmaking (Pacífico)": [
+            "Paso 1: Descubre a su pretendiente dentro de la academia y consulta sus preferencias en Info-chan.",
+            "Paso 2: Ajusta el peinado y accesorios del pretendiente para que coincidan con el gusto atlético de Asu.",
+            "Paso 3: Guíalo en sus conversaciones diarias hasta lograr que sean pareja antes del viernes."
+          ]
+        }
+      },
+      {
+        nombre: "6. Muja Kina",
+        semana: "Semana 6",
+        rol: "Enfermera sustituta de la escuela",
+        desc: "Una enfermera joven y muy torpe que reemplaza temporalmente a la enfermera oficial.",
+        metodos: {
+          "Sabotaje médico / Veneno (Específico)": [
+            "Paso 1: Aprovecha su torpeza en la enfermería cuando deja medicamentos sin supervisión.",
+            "Paso 2: Intercambia las etiquetas de los frascos médicos o coloca veneno en su bebida de descanso.",
+            "Paso 3: Muja ingerirá la sustancia equivocada sin darse cuenta."
+          ],
+          "Despido / Ruina de reputación (Pacífico)": [
+            "Paso 1: Toma fotografías comprometedoras de sus descuidos médicos o sabotea su trabajo en la enfermería.",
+            "Paso 2: Reporta sus errores graves ante la consejera escolar y difunde rumores entre los alumnos.",
+            "Paso 3: Será despedida de su puesto temporal antes de que termine la semana."
+          ]
+        }
+      },
+      {
+        nombre: "7. Mida Rana",
+        semana: "Semana 7",
+        rol: "Profesora sustituta",
+        desc: "Una maestra coqueta que busca llamar la atención de sus alumnos, especialmente de Senpai.",
+        metodos: {
+          "Expulsión / Arresto por conducta inapropiada (Específico)": [
+            "Paso 1: Usa tu teléfono para tomar pruebas fotográficas o grabaciones cuando Mida se comporte de forma inapropiada con los estudiantes.",
+            "Paso 2: Lleva las pruebas directamente a la oficina de la consejera Genka Kunahito o a la policía.",
+            "Paso 3: Será despedida y arrestada de inmediato."
+          ],
+          "Eliminación sigilosa (Letal)": [
+            "Paso 1: Espera a que se quede sola calificando exámenes en la sala de profesores o en el aula vacía.",
+            "Paso 2: Sube tu estadística de Educación Física para poder vencerla en combate si te detecta.",
+            "Paso 3: Elimínala por la espalda y deshazte del cuerpo en el incinerador o tina de ácido."
+          ]
+        }
+      },
+      {
+        nombre: "8. Osoro Shidesu",
+        semana: "Semana 8",
+        rol: "Líder de los Delincuentes",
+        desc: "La estudiante más temida y fuerte de Akademi High. Protege a los delincuentes y empieza a mostrar su lado suave con Senpai.",
+        metodos: {
+          "Traición / Amistad con los delincuentes (Específico)": [
+            "Paso 1: Investiga el pasado de Osoro y la razón por la que los delincuentes la siguen.",
+            "Paso 2: Completa su tarea especial para ganarte su confianza y atraerla lejos de su pandilla.",
+            "Paso 3: Puedes convencerla de alejarse de Senpai o emboscarla cuando esté completamente sola."
+          ],
+          "Rechazo (Pacífico)": [
+            "Paso 1: Sabotea los momentos tranquilos donde Osoro intenta mostrarle a Senpai que no es una mala persona.",
+            "Paso 2: Haz que parezca que sigue cometiendo actos violentos o destruyendo cosas de Taro.",
+            "Paso 3: Senpai le tendrá miedo y rechazará su confesión el viernes."
+          ]
+        }
+      },
+      {
+        nombre: "9. Hanako Yamada",
+        semana: "Semana 9",
+        rol: "Hermana menor de Senpai",
+        desc: "Muy apegada a su hermano mayor Taro. No quiere que tenga novia porque teme que la abandone.",
+        metodos: {
+          "Emparejamiento / Matchmaking (Pacífico - Recomendado)": [
+            "Paso 1: Como es la hermana de Senpai, eliminarla letalmente destruirá la cordura de Taro.",
+            "Paso 2: Encuentra a un chico amable en la escuela y ayúdalo a acercarse a Hanako.",
+            "Paso 3: Cuando Hanako tenga novio, dejará de depender tanto de su hermano y no interferirá contigo."
+          ],
+          "Amistad (Pacífico)": [
+            "Paso 1: Habla con Hanako y cumple su tarea personal para convertirte en su amiga.",
+            "Paso 2: Prométele que jamás la separarás de su hermano mayor.",
+            "Paso 3: Hanako aceptará que estés cerca de Taro sin oponerse."
+          ]
+        }
+      },
+      {
+        nombre: "10. Megami Saikou",
+        semana: "Semana 10",
+        rol: "Presidenta del Consejo Estudiantil y heredera de Saikou Corp",
+        desc: "La rival final. Intocable, rodeada de guardaespaldas, cámaras y el Consejo Estudiantil. Sabe que eres peligrosa.",
+        metodos: {
+          "Infiltración y sabotaje en el crucero / evento final (Específico)": [
+            "Paso 1: Durante la semana 10, Megami estará bajo máxima vigilancia con detectores de metales y cámaras extra.",
+            "Paso 2: Usa todos los favores de Info-chan, distracciones del Consejo Estudiantil y venenos indetectables.",
+            "Paso 3: Aprovecha el momento exacto en que se aleje de sus guardaespaldas durante el evento especial."
+          ],
+          "Amistad / Alianza con Saikou (Pacífico)": [
+            "Paso 1: Evita cualquier asesinato durante las 9 semanas anteriores para mantener la atmósfera escolar al 100%.",
+            "Paso 2: Cumple las pruebas de carácter y tareas que Megami te impone para demostrar que no eres una amenaza.",
+            "Paso 3: Si logras ganarte su respeto, te permitirá acercarte a Senpai."
+          ]
+        }
+      }
+    ];
+
+    function mostrarClubes() {
+      // Ocultar sección de rivales si estaba abierta
+      document.getElementById("lista-rivales").style.display = "none";
+      document.getElementById("detalle-rival").style.display = "none";
+
+      const contenedor = document.getElementById("lista-clubes");
+      contenedor.style.display = "grid";
+      contenedor.innerHTML = "";
+
+      clubesYandere.forEach((club, index) => {
+        const boton = document.createElement("button");
+        boton.className = "btn-club";
+        boton.innerText = club.nombre.split(" (")[0];
+        boton.onclick = () => verDetalleClub(index, boton);
+        contenedor.appendChild(boton);
+      });
+    }
+
+    function verDetalleClub(indice, botonSeleccionado) {
+      document.querySelectorAll("#lista-clubes .btn-club").forEach(btn => btn.classList.remove("activo"));
+      botonSeleccionado.classList.add("activo");
+
+      const club = clubesYandere[indice];
+      const panel = document.getElementById("detalle-club");
+      panel.style.display = "block";
+
+      document.getElementById("ficha-alumno").style.display = "none";
+
+      document.getElementById("club-nombre").innerText = club.nombre;
+      document.getElementById("club-ubicacion").innerText = club.ubicacion;
+      document.getElementById("club-lider").innerText = club.lider;
+      document.getElementById("club-descripcion").innerText = club.descripcion;
+      document.getElementById("club-beneficio").innerText = club.beneficio;
+
+      const contenedorMiembros = document.getElementById("club-miembros");
+      contenedorMiembros.innerHTML = "";
+
+      club.miembros.forEach((miembro, i) => {
+        const botonMiembro = document.createElement("button");
+        botonMiembro.className = i === 0 ? "badge-miembro badge-lider" : "badge-miembro";
+        botonMiembro.innerText = i === 0 ? `👑 ${miembro}` : miembro;
+        botonMiembro.onclick = () => verDetalleEstudiante(miembro, botonMiembro);
+        contenedorMiembros.appendChild(botonMiembro);
+      });
+    }
+
+    function verDetalleEstudiante(nombreEstudiante, botonElemento) {
+      document.querySelectorAll("#club-miembros .badge-miembro").forEach(b => b.classList.remove("seleccionado"));
+      botonElemento.classList.add("seleccionado");
+
+      const info = datosEstudiantes[nombreEstudiante];
+      const ficha = document.getElementById("ficha-alumno");
+      ficha.style.display = "block";
+
+      document.getElementById("alumno-nombre").innerText = `📁 Expediente: ${nombreEstudiante}`;
+      document.getElementById("alumno-clase").innerText = info.clase;
+      document.getElementById("alumno-personalidad").innerText = info.personalidad;
+      document.getElementById("alumno-crush").innerText = info.crush;
+      document.getElementById("alumno-fuerza").innerText = info.fuerza;
+      document.getElementById("alumno-info").innerText = info.info;
+    }
+
+    // Funciones para la sección de Rivales
+    function mostrarRivales() {
+      // Ocultar sección de clubes si estaba abierta
+      document.getElementById("lista-clubes").style.display = "none";
+      document.getElementById("detalle-club").style.display = "none";
+
+      const contenedor = document.getElementById("lista-rivales");
+      contenedor.style.display = "grid";
+      contenedor.innerHTML = "";
+
+      rivalesYandere.forEach((rival, index) => {
+        const boton = document.createElement("button");
+        boton.className = "btn-club btn-rival-item";
+        boton.innerText = rival.nombre;
+        boton.onclick = () => verDetalleRival(index, boton);
+        contenedor.appendChild(boton);
+      });
+    }
+
+    function verDetalleRival(indice, botonSeleccionado) {
+      document.querySelectorAll("#lista-rivales .btn-club").forEach(btn => btn.classList.remove("activo"));
+      botonSeleccionado.classList.add("activo");
+
+      const rival = rivalesYandere[indice];
+      const panel = document.getElementById("detalle-rival");
+      panel.style.display = "block";
+
+      // Ocultar guía paso a paso al cambiar de rival
+      document.getElementById("ficha-metodo").style.display = "none";
+
+      document.getElementById("rival-nombre").innerText = rival.nombre;
+      document.getElementById("rival-semana").innerText = rival.semana;
+      document.getElementById("rival-rol").innerText = rival.rol;
+      document.getElementById("rival-desc").innerText = rival.desc;
+
+      const contenedorMetodos = document.getElementById("rival-metodos");
+      contenedorMetodos.innerHTML = "";
+
+      Object.keys(rival.metodos).forEach(nombreMetodo => {
+        const botonMetodo = document.createElement("button");
+        botonMetodo.className = "badge-metodo";
+        botonMetodo.innerText = nombreMetodo;
+        botonMetodo.onclick = () => verPasosMetodo(rival, nombreMetodo, botonMetodo);
+        contenedorMetodos.appendChild(botonMetodo);
+      });
+    }
+
+    function verPasosMetodo(rival, nombreMetodo, botonMetodo) {
+      document.querySelectorAll("#rival-metodos .badge-metodo").forEach(b => b.classList.remove("seleccionado"));
+      botonMetodo.classList.add("seleccionado");
+
+      const pasos = rival.metodos[nombreMetodo];
+      const ficha = document.getElementById("ficha-metodo");
+      ficha.style.display = "block";
+
+      document.getElementById("metodo-titulo").innerText = `📋 Guía paso a paso: ${nombreMetodo}`;
+      const listaOl = document.getElementById("metodo-pasos");
+      listaOl.innerHTML = "";
+
+      pasos.forEach(pasoTexto => {
+        const li = document.createElement("li");
+        li.innerText = pasoTexto;
+        listaOl.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>
