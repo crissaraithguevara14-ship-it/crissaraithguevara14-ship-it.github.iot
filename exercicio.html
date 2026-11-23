@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 4 - Hierarquia visual e layout</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f5f7;
+      color: #282072;
+      line-height: 1.5;
+      padding: 32px 16px;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #282072;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #4b5563;
+      font-size: 1.05rem;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #282072;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+
+    ul {
+      margin-left: 20px;
+      margin-bottom: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: #374151;
+    }
+
+    li strong {
+      color: #282072;
+    }
+
+    /* Comparación Sem vs Com hierarquia */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .col-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 12px;
+    }
+
+    .card {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    /* Estilo sin jerarquía */
+    .no-hierarchy p {
+      font-size: 0.95rem;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    /* Estilo con jerarquía */
+    .with-hierarchy {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .with-hierarchy .label {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .with-hierarchy .value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #111827;
+      margin: 8px 0;
+    }
+
+    .with-hierarchy .meta {
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
+
+    /* Tabla de reglas de layout */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 0.95rem;
+    }
+
+    th {
+      font-weight: 700;
+      color: #111827;
+      background-color: #f9fafb;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: #1f2937;
+      width: 28%;
+    }
+
+    /* Ejemplo de grade (CSS Grid) */
+    .sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .sensor-card {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 24px 16px;
+      text-align: center;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .code-caption {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85rem;
+      background-color: #f3f4f6;
+      padding: 10px 14px;
+      border-radius: 6px;
+      color: #374151;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    /* Cuadro de destaque inferior */
+    .tip-box {
+      background-color: #fefce8;
+      border-left: 4px solid #eab308;
+      padding: 16px 20px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      color: #422006;
+    }
+
+    @media (max-width: 600px) {
+      .comparison-grid,
+      .sensors-grid {
+        grid-template-columns: 1fr;
+      }
+      .container {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <h1>Aula 4 - Hierarquia visual e layout</h1>
+    <p class="subtitle">Hierarquia visual é guiar o olho: o mais importante deve ser visto primeiro.</p>
+
+    <h2>Ferramentas da hierarquia</h2>
+    <ul>
+      <li><strong>Tamanho:</strong> maior chama mais atenção.</li>
+      <li><strong>Peso/cor:</strong> negrito e cor forte destacam.</li>
+      <li><strong>Espaço em branco:</strong> separa grupos e deixa respirar.</li>
+      <li><strong>Posição:</strong> topo e esquerda são lidos primeiro (no Ocidente).</li>
+    </ul>
+
+    <div class="comparison-grid">
+      <div>
+        <div class="col-title">Sem hierarquia</div>
+        <div class="card no-hierarchy">
+          <p>Temperatura da estufa</p>
+          <p>Atualizado agora</p>
+          <p>27.5 graus</p>
+          <p>Estado: normal</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="col-title">Com hierarquia</div>
+        <div class="card with-hierarchy">
+          <span class="label">Temperatura da estufa</span>
+          <span class="value">27,5 °C</span>
+          <span class="meta">Normal / atualizado agora</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Regras de layout</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Regra</th>
+          <th>O que fazer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Proximidade</td>
+          <td>Itens relacionados ficam juntos, separe grupos diferentes.</td>
+        </tr>
+        <tr>
+          <td>Alinhamento</td>
+          <td>Alinhe tudo a uma mesma linha invisível.</td>
+        </tr>
+        <tr>
+          <td>Repetição</td>
+          <td>Use o mesmo estilo para elementos iguais.</td>
+        </tr>
+        <tr>
+          <td>Contraste</td>
+          <td>O que é importante deve ser bem diferente do resto.</td>
+        </tr>
+        <tr>
+          <td>Grade (grid)</td>
+          <td>Organize em colunas, ex.: 4 colunas no celular, 12 no desktop.</td>
+        </tr>
+        <tr>
+          <td>Escala de espaços</td>
+          <td>Use múltiplos de 8px (8, 16, 24, 32).</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Exemplo de grade</h2>
+    <div class="sensors-grid">
+      <div class="sensor-card">Sensor 1</div>
+      <div class="sensor-card">Sensor 2</div>
+      <div class="sensor-card">Sensor 3</div>
+    </div>
+
+    <div class="code-caption">
+      grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    </div>
+
+    <div class="tip-box">
+      <strong>Teste do apertar de olhos:</strong> afaste-se da tela e aperte os olhos. O que ainda aparece é o que seu design destaca. É o certo?
+    </div>
+  </main>
+
+</body>
+</html>
