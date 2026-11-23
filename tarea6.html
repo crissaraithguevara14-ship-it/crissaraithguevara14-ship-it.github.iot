@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Transiciones y Animaciones CSS</title>
+  <style>
+    /* Botón con transición suave */
+    .botao {
+      background: #1e88e5;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .botao:hover {
+      background: #1565c0;
+      transform: scale(1.1);
+    }
+
+    /* Animación del círculo (aparecer y desaparecer) */
+    @keyframes piscar {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.1; }
+      100% { opacity: 1; }
+    }
+
+    /* Estilo del círculo rojo */
+    .led {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgb(255, 0, 234);
+      margin: 30px;
+      animation: piscar 1s infinite;
+      transition: transform 0.3s ease;
+    }
+
+    /* Agrandar el círculo al pasar el mouse sobre el botón */
+    .botao:hover + .led {
+      transform: scale(1.5);
+    }
+  </style>
+</head>
+<body>
+
+  <button class="botao">Pasa el mouse aquí</button>
+
+  <div class="led"></div>
+
+</body>
+</html>
