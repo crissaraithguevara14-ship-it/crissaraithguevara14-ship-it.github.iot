@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 5 - Cores, contraste e tipografia</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background-color: #f4f6f9;
+      color: #1f2937;
+      line-height: 1.5;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 36px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #111827;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #1e40af;
+      margin-top: 28px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    ul {
+      margin-left: 22px;
+      margin-bottom: 16px;
+    }
+
+    li {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 550px;
+      border-collapse: collapse;
+      margin: 16px 0 24px 0;
+      font-size: 16px;
+    }
+
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+
+    .teste-box {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .controles {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      margin: 14px 0;
+    }
+
+    .controles label {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .controles input[type="color"] {
+      width: 44px;
+      height: 34px;
+      border: 1px solid #9ca3af;
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+    }
+
+    .controles input[type="text"] {
+      width: 90px;
+      padding: 6px 8px;
+      border: 1px solid #9ca3af;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .btn-testar {
+      background-color: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-testar:hover {
+      background-color: #1d4ed8;
+    }
+
+    .preview-card {
+      background-color: #1f2937;
+      color: #ffffff;
+      padding: 18px 22px;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: 500;
+      margin: 14px 0;
+      border: 1px solid #d1d5db;
+    }
+
+    .resultado-contraste {
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .exercicios-box {
+      background-color: #fefce8;
+      border: 1px solid #fde047;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 28px;
+    }
+
+    .exercicios-box h2 {
+      margin-top: 0;
+      color: #854d0e;
+    }
+
+    .exercicios-box ol {
+      margin-left: 22px;
+    }
+
+    .exercicios-box li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Aula 5 - Cores, contraste e tipografia</h1>
+
+    <!-- Seção Cores -->
+    <h2>Cores</h2>
+    <ul>
+      <li><strong>Regra 60-30-10:</strong> 60% cor neutra (fundo), 30% cor secundária, 10% cor de destaque (botões).</li>
+      <li>Use uma cor de ação principal. Muitas cores confundem.</li>
+      <li>Cores têm significado: verde = ok/ligado, amarelo = atenção, vermelho = erro/perigo.</li>
+      <li>Nunca use só a cor para informar (8% dos homens têm daltonismo). Some texto ou ícone: "✓ Ligado".</li>
+    </ul>
+
+    <!-- Seção Contraste -->
+    <h2>Contraste (legibilidade)</h2>
+    <p>É a diferença entre cor do texto e do fundo. A norma WCAG pede:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Nível</th>
+          <th>Texto normal</th>
+          <th>Texto grande (≥ 24px)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>AA</strong> (mínimo)</td>
+          <td>4.5 : 1</td>
+          <td>3 : 1</td>
+        </tr>
+        <tr>
+          <td><strong>AAA</strong> (ideal)</td>
+          <td>7 : 1</td>
+          <td>4.5 : 1</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Seção Interativa: Teste agora -->
+    <div class="teste-box" id="teste-agora">
+      <h2 style="margin-top: 0;">Teste agora</h2>
+      <p>Escolha cores e veja a razão de contraste:</p>
+
+      <div class="controles">
+        <label>
+          Texto
+          <input type="color" id="corTextoPicker" value="#ffffff">
+          <input type="text" id="corTextoHex" value="#ffffff" maxlength="7">
+        </label>
+
+        <label>
+          Fundo
+          <input type="color" id="corFundoPicker" value="#1f2937">
+          <input type="text" id="corFundoHex" value="#1f2937" maxlength="7">
+        </label>
+
+        <button class="btn-testar" onclick="calcularContraste()">Testar</button>
+      </div>
+
+      <div class="preview-card" id="previewBox">
+        Temperatura: 27 graus
+      </div>
+
+      <div class="resultado-contraste" id="resultadoTexto">
+        Contraste: 14.68 : 1 - AAA (excelente)
+      </div>
+    </div>
+
+    <!-- Seção Tipografia -->
+    <h2>Tipografia</h2>
+    <ul>
+      <li>Use no máximo <strong>2 fontes</strong>.</li>
+      <li>Texto de leitura: <strong>16px</strong> ou mais no celular; linhas de 45 a 75 caracteres.</li>
+      <li>Entrelinha de <strong>1,4 a 1,6</strong>.</li>
+      <li>Prefira fontes sem serifa na tela (Arial, Roboto, Segoe UI).</li>
+      <li>Mostre hierarquia: título (24-32), subtítulo (18-20), texto (16), legenda (12-14).</li>
+      <li>Evite TUDO EM MAIÚSCULO em frases longas.</li>
+    </ul>
+
+    <!-- Seção Exercícios -->
+    <div class="exercicios-box">
+      <h2>Exercícios</h2>
+      <ol>
+        <li>Teste o cinza <code>#777777</code> sobre branco (<code>#ffffff</code>). Passa em AA? Qual cinza mais escuro passa?</li>
+        <li>Monte uma paleta 60-30-10 para um app da escola.</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const textoPicker = document.getElementById('corTextoPicker');
+    const textoHex = document.getElementById('corTextoHex');
+    const fundoPicker = document.getElementById('corFundoPicker');
+    const fundoHex = document.getElementById('corFundoHex');
+
+    textoPicker.addEventListener('input', () => {
+      textoHex.value = textoPicker.value;
+      calcularContraste();
+    });
+
+    textoHex.addEventListener('input', () => {
+      if (/^#[0-9A-Fa-f]{6}$/.test(textoHex.value)) {
+        textoPicker.value = textoHex.value;
+        calcularContraste();
+      }
+    });
+
+    fundoPicker.addEventListener('input', () => {
+      fundoHex.value = fundoPicker.value;
+      calcularContraste();
+    });
+
+    fundoHex.addEventListener('input', () => {
+      if (/^#[0-9A-Fa-f]{6}$/.test(fundoHex.value)) {
+        fundoPicker.value = fundoHex.value;
+        calcularContraste();
+      }
+    });
+
+    function hexParaRgb(hex) {
+      const limpo = hex.replace('#', '');
+      const num = parseInt(limpo, 16);
+      return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+      };
+    }
+
+    function luminanciaRelativa(r, g, b) {
+      const [rs, gs, bs] = [r, g, b].map(c => {
+        c = c / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+    }
+
+    function calcularContraste() {
+      const corT = textoHex.value;
+      const corF = fundoHex.value;
+
+      if (!/^#[0-9A-Fa-f]{6}$/.test(corT) || !/^#[0-9A-Fa-f]{6}$/.test(corF)) {
+        return;
+      }
+
+      const preview = document.getElementById('previewBox');
+      preview.style.color = corT;
+      preview.style.backgroundColor = corF;
+
+      const rgb1 = hexParaRgb(corT);
+      const rgb2 = hexParaRgb(corF);
+
+      const lum1 = luminanciaRelativa(rgb1.r, rgb1.g, rgb1.b);
+      const lum2 = luminanciaRelativa(rgb2.r, rgb2.g, rgb2.b);
+
+      const maisClara = Math.max(lum1, lum2);
+      const maisEscura = Math.min(lum1, lum2);
+      const razao = (maisClara + 0.05) / (maisEscura + 0.05);
+      const razaoFormatada = razao.toFixed(2);
+
+      let classificacao = '';
+      if (razao >= 7) {
+        classificacao = 'AAA (excelente)';
+      } else if (razao >= 4.5) {
+        classificacao = 'AA (bom / mínimo para texto normal)';
+      } else if (razao >= 3) {
+        classificacao = 'AA apenas para texto grande (≥ 24px)';
+      } else {
+        classificacao = 'Reprovado (contraste insuficiente)';
+      }
+
+      document.getElementById('resultadoTexto').textContent =
+        `Contraste: ${razaoFormatada} : 1 - ${classificacao}`;
+    }
+
+    calcularContraste();
+  </script>
+
+</body>
+</html>
